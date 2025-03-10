@@ -249,11 +249,18 @@ export default function ExcelPreprocessPage() {
           <li>D열: 카테고리 번호를 111001000으로 통일</li>
           <li>F열: 판매가 계산 (가격대별 마진율 적용)</li>
           <li>G열: 수량을 999로 통일</li>
-          <li>J열: 원산지 "국산"을 "국산/서울시/송파구"로 변경</li>
-          <li>S열: 상세설명*에서 첫 번째 이미지 URL 추출</li>
-          <li>V열: 선택사항 타입 "독립형"을 "조합형"으로 변경</li>
           <li>
-            W열: 선택사항 옵션명 "색상" 또는 "사이즈"를 "선택사항"으로 변경
+            J열: 원산지 &ldquo;국산&rdquo;을 &ldquo;국산/서울시/송파구&rdquo;로
+            변경
+          </li>
+          <li>S열: 상세설명*에서 첫 번째 이미지 URL 추출</li>
+          <li>
+            V열: 선택사항 타입 &ldquo;독립형&rdquo;을 &ldquo;조합형&rdquo;으로
+            변경
+          </li>
+          <li>
+            W열: 선택사항 옵션명 &ldquo;색상&rdquo; 또는 &ldquo;사이즈&rdquo;를
+            &ldquo;선택사항&rdquo;으로 변경
           </li>
           <li>X열: 선택사항 상세정보 처리 (추가금, 수량, 옵션 형식 변경)</li>
           <li>BZ열: 추출한 상세이미지 URL 추가</li>

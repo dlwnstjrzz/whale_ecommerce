@@ -450,7 +450,7 @@ export default function KeywordSearchPage() {
                 저장됩니다.
               </p>
               <p className="text-sm text-gray-500">
-                * "확장정보" 시트가 추가되어 마켓별 추가 정보를 입력할 수
+                * 확장정보 시트가 추가되어 마켓별 추가 정보를 입력할 수
                 있습니다.
               </p>
               <p className="text-sm text-gray-500">
