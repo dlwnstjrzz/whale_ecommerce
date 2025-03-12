@@ -181,8 +181,7 @@ export default function TrademarkCheckPage() {
                   * .xlsx 또는 .xls 형식의 파일만 업로드 가능합니다.
                 </p>
                 <p className="text-sm text-gray-500">
-                  * 엑셀 파일에서 "상품명", "제품명", "품명" 열을 자동으로
-                  인식합니다.
+                  * 엑셀 파일에서 상품명, 제품명, 품명 열을 자동으로 인식합니다.
                 </p>
               </div>
               <Button
