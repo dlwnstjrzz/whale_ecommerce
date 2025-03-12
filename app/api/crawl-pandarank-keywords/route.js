@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import puppeteerCore from "puppeteer-core";
 import chromium from "@sparticuz/chromium";
 import * as cheerio from "cheerio";
-import os from "os";
 
 export async function POST(request) {
   try {
@@ -44,6 +43,8 @@ export async function POST(request) {
         "--disable-web-security",
         "--disable-features=IsolateOrigins,site-per-process",
         "--disable-dev-shm-usage",
+        "--disable-gpu",
+        "--disable-extensions",
       ],
       executablePath,
       ignoreHTTPSErrors: true,
@@ -57,13 +58,14 @@ export async function POST(request) {
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
       );
 
-      // 타임아웃 설정
-      page.setDefaultNavigationTimeout(30000);
-      // 페이지 로드
-      await page.goto(url, { waitUntil: "networkidle0", timeout: 30000 });
+      // 타임아웃 설정 - 짧게 설정
+      page.setDefaultNavigationTimeout(15000);
 
-      // 잠시 대기 (setTimeout 사용)
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      // 페이지 로드
+      await page.goto(url, { waitUntil: "networkidle0", timeout: 15000 });
+
+      // 잠시 대기 (짧게 설정)
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // HTML 가져오기
       const content = await page.content();
@@ -117,7 +119,7 @@ export async function POST(request) {
           item.monthlySearchVolume >= 40 && item.monthlySearchVolume <= 1200
         );
       });
-
+      console.log(rawData.length);
       return NextResponse.json(
         {
           relatedKeywords: filteredData.map((item) => item.keyword),
