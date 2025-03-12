@@ -56,7 +56,7 @@ export async function POST(request) {
       process.env.NODE_ENV === "production"
         ? {
             args: chromium.args,
-            // defaultViewport: chromium.defaultViewport,
+            defaultViewport: chromium.defaultViewport,
             executablePath,
             headless: chromium.headless,
             ignoreHTTPSErrors: true,
@@ -80,11 +80,13 @@ export async function POST(request) {
     const browser = await puppeteerCore.launch(launchOptions);
     try {
       const page = await browser.newPage();
-
+      await page.setUserAgent(
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+      );
       // 페이지 로드
-      await page.goto(url, {
-        waitUntil: "domcontentloaded",
-      });
+      await page.goto(url, { waitUntil: "domcontentloaded" });
+      await page.waitForSelector("#datatable", { timeout: 10000 }); // 최대 10초 대기
+
       // 페이지 로딩 후 2초 대기
       await new Promise((resolve) => setTimeout(resolve, 3000));
 
