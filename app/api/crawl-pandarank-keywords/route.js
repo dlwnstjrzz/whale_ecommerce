@@ -147,6 +147,7 @@ export async function POST(request) {
         {
           relatedKeywords: filteredData.map((item) => item.keyword),
           rawData: rawData,
+          content: content,
         },
         {
           headers: {
