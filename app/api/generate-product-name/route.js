@@ -15,7 +15,9 @@ export async function POST(request) {
       rawData,
       imageUrl,
     } = await request.json();
-
+    console.log("imageAnalysis", imageAnalysis);
+    console.log("relatedKeywords", relatedKeywords);
+    console.log("rawData", rawData);
     if (!productName || !mainKeyword || !relatedKeywords || !imageAnalysis) {
       return NextResponse.json(
         { error: "필요한 데이터가 누락되었습니다." },
@@ -26,20 +28,7 @@ export async function POST(request) {
     // 2. 제품명 생성
     const prompt = `다음 규칙에 따라 상품명을 생성해주세요:
 
-1. 상품명 구성 규칙:
-   - 핵심메인키워드: 네이버 연관키워드 중에서 선택 (월 검색량 40~1200 사이)
-   - 핵심메인키워드를 반드시 제품명 가장 앞에 배치할것
-   - 메인키워드 1,2,3: 네이버 연관키워드 중에서 선택
-   - 수식키워드 1,2: 이미지 분석 결과의 제품 특징에서 선택
-
-2. 상품명 작성 규칙:
-   - 총 길이: 70~80 byte
-   - 같은 단어는 최대 2번까지만 사용 가능
-   - 형용사는 제품의 특징을 나타내는 경우에만 사용
-   - 제품의 사용용도/사용자/성별을 키워드로 포함 (선택사항)
-   - 제품의 지칭 키워드는 2개 이상 포함
-
-3. 제품 정보:
+  제품 정보:
    - 원본 상품명: ${productName}
    - 이미지 분석 결과:
      * 제품 카테고리: ${imageAnalysis.category}
@@ -47,6 +36,38 @@ export async function POST(request) {
    - 네이버 연관키워드: ${relatedKeywords
      .map((k) => `${k.keyword}(${k.monthlySearchVolume}회)`)
      .join(", ")}
+
+1. 상품명 구성 규칙:
+   - 제품명은 핵심메인키워드 + 메인키워드 + 수식키워드로 구성되며, 각 키워드는 ${productName}과 ${imageAnalysis.features.join(
+      ", "
+    )}
+   를 종합해서 가장 연관있는 키워드로 선정할것.
+   - 핵심메인키워드: 반드시 ${relatedKeywords.join(
+     ", "
+   )} 중에서 제품을 가장 대표적으로 잘 나타내는 키워드를 그대로 쓸 것. 또한 ${productName}과 ${imageAnalysis.features.join(
+      ", "
+    )}
+   를 종합해서 가장 연관있는 키워드로 선정할것.
+   - 핵심메인키워드를 반드시 제품명 가장 앞에 배치할것
+   예 : 핵심메인키워드가 라탄바구니라면 모든 제품명은 라탄바구니로 시작해야함.
+   - 메인키워드 1,2,3: ${relatedKeywords.join(", ")} 중에서 선택
+   - 수식키워드 1,2: ${imageAnalysis.features.join(", ")}에서 선택
+   - 메인키워드와 수식키워드의 순서는 중요하지 않음.
+   단, 수식 키워드는 가장 뒤에 배치하면 안됨.
+   
+2. 상품명 작성 규칙:
+   - 총 길이: 70~80 byte
+   - 같은 단어는 최대 2번까지만 사용 가능
+   - 형용사는 제품의 특징을 나타내는 경우에만 사용
+   - 제품의 사용용도/사용자/성별을 키워드로 포함 (선택사항, 필수 아님)
+   - 제품의 지칭 키워드는 2개 이상 포함
+
+3. 제품 정보:
+   - 원본 상품명: ${productName}
+   - 이미지 분석 결과:
+     * 제품 카테고리: ${imageAnalysis.category}
+     * 제품 특징: ${imageAnalysis.features.join(", ")}
+   - 네이버 연관키워드: ${relatedKeywords}
 
 4. 주의사항:
    - 핵심메인키워드와 메인키워드는 반드시 네이버 연관키워드 중에서 선택

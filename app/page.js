@@ -35,6 +35,9 @@ export default function Home() {
             <Link href="/keyword-search">
               <Button variant="outline">키워드 검색</Button>
             </Link>
+            <Link href="/trademark-check">
+              <Button variant="outline">상품명 브랜드 특허명 체크</Button>
+            </Link>
           </div>
         </div>
 

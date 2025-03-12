@@ -334,7 +334,7 @@ export default function BulkProductNamePage() {
                           연관 키워드
                         </h3>
                         <div className="flex flex-wrap gap-1">
-                          {result.rawData?.slice(0, 5).map((item, i) => (
+                          {result.rawData?.map((item, i) => (
                             <span
                               key={i}
                               className="inline-block bg-gray-100 rounded px-2 py-1 text-xs"

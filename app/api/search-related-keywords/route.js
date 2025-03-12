@@ -7,7 +7,14 @@ export async function POST(request) {
     if (!keyword) {
       return NextResponse.json(
         { error: "키워드가 필요합니다." },
-        { status: 400 }
+        {
+          status: 400,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+          },
+        }
       );
     }
 
@@ -18,11 +25,15 @@ export async function POST(request) {
     const response = await fetch(url, {
       method: "GET",
       headers: {
-        Accept: "application/json",
+        Accept: "application/json, text/plain, */*",
         "Content-Type": "application/json",
         Referer: "https://pandarank.net/",
         "User-Agent":
-          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+        "sec-ch-ua":
+          '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"Windows"',
       },
       cache: "no-store",
     });
@@ -36,10 +47,19 @@ export async function POST(request) {
     // 응답 데이터가 배열이 아닌 경우 처리
     if (!data.data || !Array.isArray(data.data)) {
       console.error("API 응답이 올바른 형식이 아님:", data);
-      return NextResponse.json({
-        relatedKeywords: [],
-        rawData: [],
-      });
+      return NextResponse.json(
+        {
+          relatedKeywords: [],
+          rawData: [],
+        },
+        {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+          },
+        }
+      );
     }
 
     // 응답 데이터 처리
