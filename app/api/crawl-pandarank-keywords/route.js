@@ -35,23 +35,49 @@ export async function POST(request) {
         ? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
         : "/usr/bin/google-chrome";
 
-    const browser = await puppeteerCore.launch({
-      headless: chromium.headless,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-web-security",
-        "--disable-features=IsolateOrigins,site-per-process",
-        "--disable-dev-shm-usage",
-        "--disable-gpu",
-        "--disable-extensions",
-      ],
-      executablePath,
-      // args: chromium.args,
-      // defaultViewport: chromium.defaultViewport,
-      ignoreHTTPSErrors: true,
-    });
+    // const browser = await puppeteerCore.launch({
+    //   headless: chromium.headless,
+    //   args: [
+    //     "--no-sandbox",
+    //     "--disable-setuid-sandbox",
+    //     "--disable-web-security",
+    //     "--disable-features=IsolateOrigins,site-per-process",
+    //     "--disable-dev-shm-usage",
+    //     "--disable-gpu",
+    //     "--disable-extensions",
+    //   ],
+    //   executablePath,
+    //   // args: chromium.args,
+    //   // defaultViewport: chromium.defaultViewport,
 
+    //   ignoreHTTPSErrors: true,
+    // });
+    const launchOptions =
+      process.env.NODE_ENV === "production"
+        ? {
+            args: chromium.args,
+            defaultViewport: chromium.defaultViewport,
+            executablePath,
+            headless: chromium.headless,
+            ignoreHTTPSErrors: true,
+          }
+        : {
+            executablePath, // 위에서 설정한 로컬 Chrome 경로
+            headless: true,
+            ignoreHTTPSErrors: true,
+            args: [
+              "--no-sandbox",
+              "--disable-setuid-sandbox",
+              "--disable-web-security",
+              "--disable-features=IsolateOrigins,site-per-process",
+              "--disable-dev-shm-usage",
+              "--disable-gpu",
+              "--disable-extensions",
+            ],
+            // 필요한 경우 기본 args를 추가할 수 있음
+          };
+
+    const browser = await puppeteerCore.launch(launchOptions);
     try {
       const page = await browser.newPage();
 
@@ -60,7 +86,11 @@ export async function POST(request) {
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
       );
       // 페이지 로드
-      await page.goto(url, { waitUntil: "networkidle0" });
+      await page.goto(url, {
+        waitUntil: "domcontentloaded",
+      });
+      // 페이지 로딩 후 2초 대기
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // HTML 가져오기
       const content = await page.content();
