@@ -1,12 +1,12 @@
 {
   "functions": {
     "app/api/crawl-pandarank-keywords/route.js": {
-      "memory": 3008,
-      "maxDuration": 30
+      "memory": 1024,
+      "maxDuration": 10
     },
     "app/api/search-related-keywords/route.js": {
-      "memory": 3008,
-      "maxDuration": 30
+      "memory": 1024,
+      "maxDuration": 10
     }
   }
 }
