@@ -36,7 +36,7 @@ export async function POST(request) {
         : "/usr/bin/google-chrome";
 
     const browser = await puppeteerCore.launch({
-      headless: "new",
+      headless: chromium.headless,
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
@@ -47,6 +47,8 @@ export async function POST(request) {
         "--disable-extensions",
       ],
       executablePath,
+      // args: chromium.args,
+      // defaultViewport: chromium.defaultViewport,
       ignoreHTTPSErrors: true,
     });
 
@@ -58,7 +60,7 @@ export async function POST(request) {
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
       );
       // 페이지 로드
-      await page.goto(url, { waitUntil: "networkidle0", timeout: 15000 });
+      await page.goto(url, { waitUntil: "networkidle0" });
 
       // HTML 가져오기
       const content = await page.content();
