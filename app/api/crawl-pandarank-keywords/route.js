@@ -85,7 +85,6 @@ export async function POST(request) {
       );
       // 페이지 로드
       await page.goto(url, { waitUntil: "domcontentloaded" });
-      await page.waitForSelector("#datatable", { timeout: 10000 }); // 최대 10초 대기
 
       // 페이지 로딩 후 2초 대기
       await new Promise((resolve) => setTimeout(resolve, 3000));
