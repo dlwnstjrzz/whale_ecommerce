@@ -57,15 +57,8 @@ export async function POST(request) {
       await page.setUserAgent(
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
       );
-
-      // 타임아웃 설정 - 짧게 설정
-      page.setDefaultNavigationTimeout(15000);
-
       // 페이지 로드
       await page.goto(url, { waitUntil: "networkidle0", timeout: 15000 });
-
-      // 잠시 대기 (짧게 설정)
-      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // HTML 가져오기
       const content = await page.content();
