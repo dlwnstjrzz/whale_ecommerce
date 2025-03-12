@@ -56,7 +56,7 @@ export async function POST(request) {
       process.env.NODE_ENV === "production"
         ? {
             args: chromium.args,
-            defaultViewport: chromium.defaultViewport,
+            // defaultViewport: chromium.defaultViewport,
             executablePath,
             headless: chromium.headless,
             ignoreHTTPSErrors: true,
@@ -81,16 +81,12 @@ export async function POST(request) {
     try {
       const page = await browser.newPage();
 
-      // 사용자 에이전트 설정
-      await page.setUserAgent(
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
-      );
       // 페이지 로드
       await page.goto(url, {
         waitUntil: "domcontentloaded",
       });
       // 페이지 로딩 후 2초 대기
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
 
       // HTML 가져오기
       const content = await page.content();
