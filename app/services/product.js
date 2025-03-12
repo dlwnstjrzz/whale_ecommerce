@@ -16,60 +16,9 @@ export async function extractKeyword(productName) {
 
 export async function searchRelatedKeywords(keyword) {
   try {
-    // 서버 API 대신 직접 PandaRank API 호출 시도
-    const encodedKeyword = encodeURIComponent(keyword);
-    const url = `https://pandarank.net/api/keywords/${encodedKeyword}/table?_=${Date.now()}`;
-
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json",
-        Referer: "https://pandarank.net/",
-        Origin: "https://pandarank.net",
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-      },
-      mode: "no-cors", // CORS 모드 설정
-    });
-
-    // 직접 호출이 성공하면 데이터 처리
-    if (response.ok) {
-      const data = await response.json();
-
-      if (!data.data || !Array.isArray(data.data)) {
-        throw new Error("API 응답이 올바른 형식이 아님");
-      }
-
-      // 응답 데이터 처리
-      const rawData = data.data.map((item) => ({
-        keyword: item[0], // 제품이름
-        source: item[1], // 출처
-        category: item[2], // 카테고리
-        monthlySearchVolume: parseInt(item[3].replace(/,/g, "") || 0), // 월간 검색량
-        productCount: parseInt(item[4].replace(/,/g, "") || 0), // 상품수
-        competitionRate: parseFloat(item[5].replace(/,/g, "") || 0), // 경쟁률
-        shoppingConversion: parseFloat(item[6].replace(/,/g, "") || 0), // 쇼핑전환
-      }));
-
-      // 검색량이 40-1200 사이이고 쇼핑전환이 0보다 큰 키워드만 필터링
-      const filteredData = rawData.filter((item) => {
-        return (
-          item.monthlySearchVolume >= 40 &&
-          item.monthlySearchVolume <= 1200 &&
-          item.shoppingConversion > 0
-        );
-      });
-
-      return {
-        relatedKeywords: filteredData.map((item) => item.keyword),
-        rawData: filteredData,
-      };
-    }
-
     // 직접 호출이 실패하면 서버 API 호출
     console.log("직접 API 호출 실패, 서버 API 사용");
-    const serverResponse = await fetch("/api/search-related-keywords", {
+    const serverResponse = await fetch("/api/crawl-pandarank-keywords", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -113,6 +62,7 @@ export async function generateProductName(productName, imageUrl) {
     const { relatedKeywords, rawData } = await searchRelatedKeywords(
       mainKeyword
     );
+    console.log("relatedKeywords", relatedKeywords);
     // 3. 이미지 분석
     const imageAnalysis = await analyzeImage(imageUrl);
     console.log("imageAnalysis", imageAnalysis);
