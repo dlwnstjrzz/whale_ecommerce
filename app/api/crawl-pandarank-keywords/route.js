@@ -39,9 +39,6 @@ export async function POST(request) {
       const page = await browser.newPage();
 
       // 사용자 에이전트 설정
-      await page.setUserAgent(
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
-      );
 
       // 타임아웃 설정
       page.setDefaultNavigationTimeout(30000);
