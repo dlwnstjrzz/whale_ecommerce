@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
-import puppeteer from "puppeteer";
+import puppeteerCore from "puppeteer-core";
+import chromium from "@sparticuz/chromium";
 import * as cheerio from "cheerio";
+import os from "os";
 
 export async function POST(request) {
   try {
@@ -25,20 +27,35 @@ export async function POST(request) {
     const url = `https://pandarank.net/search/detail?keyword=${encodedKeyword}`;
 
     // 브라우저 실행
-    const browser = await puppeteer.launch({
+    const executablePath =
+      process.env.NODE_ENV === "production"
+        ? await chromium.executablePath()
+        : process.platform === "win32"
+        ? "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+        : process.platform === "darwin"
+        ? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        : "/usr/bin/google-chrome";
+
+    const browser = await puppeteerCore.launch({
       headless: "new",
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-web-security",
         "--disable-features=IsolateOrigins,site-per-process",
+        "--disable-dev-shm-usage",
       ],
+      executablePath,
+      ignoreHTTPSErrors: true,
     });
 
     try {
       const page = await browser.newPage();
 
       // 사용자 에이전트 설정
+      await page.setUserAgent(
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+      );
 
       // 타임아웃 설정
       page.setDefaultNavigationTimeout(30000);
